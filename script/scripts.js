@@ -1,25 +1,23 @@
-$(document).ready(function () {
-    const viewer = document.querySelector('#viewer');
+// TESTANDO A FUNÇÃO 
+document.getElementById('tipo_fecho').addEventListener('change', function () {
+    const modelViewer = document.getElementById('viewer');
+    const selectedValue = this.value;
 
-    // Garante que o viewer esteja carregado antes de executar o restante do código
-    viewer.addEventListener('load', () => {
-        // Acessa os materiais do modelo (verifique se o modelo realmente tem materiais na posição indicada)
-        const aba_topo = viewer.model.materials[0]; // Acessa o material da aba
-        const corpo = viewer.model.materials[1];    // Acessa o material do corpo
-
-        // Evento para atualizar as cores dinamicamente
-        $('.cor-input').on('change', function () {
-            // Captura as cores diretamente em RGBA, convertendo de string para array
-            const cor_corpo = $('.cores_corpo .cor-input:checked').val()
-            const cor_aba = $('.cores_aba .cor-input:checked').val()
-
-            // Verifique se as cores foram capturadas corretamente
-            console.log('Cor do Corpo:', cor_corpo);
-            console.log('Cor da Aba:', cor_aba);
-
-            // Define as cores nos materiais diretamente
-            corpo.pbrMetallicRoughness.setBaseColorFactor(cor_corpo);
-            aba_topo.pbrMetallicRoughness.setBaseColorFactor(cor_aba);
-        });
-    });
+    // Troca o modelo de acordo com a seleção do usuário
+    if (selectedValue === 'snapback') {
+        modelViewer.src = 'models/bone.glb';  // Caminho para o modelo Bone
+    } else if (selectedValue === 'bucket') {
+        modelViewer.src = 'models/hat.glb';   // Caminho para o modelo Hat (no formato GLB)
+    }
 });
+document.getElementById('colorPicker').addEventListener('input', function(event) {
+    if (model) {
+        const color = event.target.value;
+        const hexColor = new THREE.Color(color);  // Converter a cor do input para um objeto THREE.Color
+
+        // Modificar a cor de todos os materiais do modelo
+        model.traverse(function(child) {
+            if (child.isMesh) {
+                child.material.color.set(hexColor);  // Alterar a cor do material
+            }
+        });
